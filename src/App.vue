@@ -1,14 +1,20 @@
 <template>
-  <div id="app">
-  </div>
+  <v-app>
+    <Header/>
+    <keep-alive>
+      <router-view class="mt-15"/>
+    </keep-alive>
+  </v-app>
 </template>
 
 <script>
 
+import Header from "./views/Header";
+
 export default {
   name: "App",
   components: {
-    Form,
+    Header,
   },
 };
 </script>
@@ -17,7 +23,6 @@ export default {
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   color: #2c3e50;
-  background-color: #fafafa;
   padding: 24px;
   box-sizing: border-box;
 }
