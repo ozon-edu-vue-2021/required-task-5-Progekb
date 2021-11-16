@@ -72,9 +72,7 @@ export default {
       return require("../assets/images/" + img);
     },
     isFavorite(foodItem) {
-      return !!this.$store.state.foodFavorite.filter(
-        (item) => item.id === foodItem.id
-      ).length;
+      return foodItem.favorite;
     },
     isCart(foodItem) {
       return !!this.$store.state.foodCart.filter(

@@ -33,7 +33,7 @@ export default {
   },
   computed: {
     foodFavorite() {
-      return this.$store.state.foodFavorite;
+      return this.$store.getters.foodFavorite;
     },
   },
   methods: {

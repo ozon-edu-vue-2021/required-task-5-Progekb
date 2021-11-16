@@ -23,7 +23,6 @@ export default new Vuex.Store({
   state: () => ({
     food: [],
     foodCart: [],
-    foodFavorite: [],
   }),
   getters: {
     cartSum: (state) => {
@@ -37,7 +36,12 @@ export default new Vuex.Store({
       }, 0);
     },
     foodFavoriteCount: (state) => {
-      return state.foodFavorite.length;
+      return state.food.reduce((acc, curVal) => {
+        return acc + (curVal.favorite ? 1 : 0);
+      }, 0);
+    },
+    foodFavorite: (state) => {
+      return state.food.filter((item) => item.favorite)
     },
   },
   mutations: {
@@ -45,6 +49,7 @@ export default new Vuex.Store({
       state.food = val.map((item) => {
         item.img = imgs[Math.floor(Math.random() * (imgs.length - 1))];
         item.count = 1;
+        item.favorite = false;
         item.price = Math.floor(Math.random() * 9999) + 1;
         return item;
       });
@@ -56,10 +61,16 @@ export default new Vuex.Store({
       state.foodCart = state.foodCart.filter((item) => item.id !== id);
     },
     addFoodFavorite: (state, val) => {
-      state.foodFavorite.push(val);
+      state.food = state.food.map((item) => {
+        if (val.id === item.id) item.favorite = true;
+        return item;
+      });
     },
     removeFoodFavorite: (state, id) => {
-      state.foodFavorite = state.foodFavorite.filter((item) => item.id !== id);
+      state.food = state.food.map((item) => {
+        if (id === item.id) item.favorite = false;
+        return item;
+      });
     },
   },
   actions: {
