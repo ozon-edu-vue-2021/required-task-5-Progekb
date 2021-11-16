@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import axios from "axios";
 
 Vue.use(Vuex);
 
@@ -25,16 +26,25 @@ export default new Vuex.Store({
     foodFavorite: [],
   }),
   getters: {
-    getFullNameAndAge: (state) => {
-      return state.profile
-        ? `${state.profile.firstName} ${state.profile.secondName} (${state.profile.age})`
-        : "";
+    cartSum: (state) => {
+      return state.foodCart.reduce((acc, curVal) => {
+        return acc + curVal.price * curVal.count;
+      }, 0);
+    },
+    foodCartCount: (state) => {
+      return state.foodCart.reduce((acc, curVal) => {
+        return acc + curVal.count;
+      }, 0);
+    },
+    foodFavoriteCount: (state) => {
+      return state.foodFavorite.length;
     },
   },
   mutations: {
     setFoods: (state, val) => {
       state.food = val.map((item) => {
         item.img = imgs[Math.floor(Math.random() * (imgs.length - 1))];
+        item.count = 1;
         item.price = Math.floor(Math.random() * 9999) + 1;
         return item;
       });
@@ -53,10 +63,15 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    logout: (context) => { // если нужны аргументы, то добавляем payload
-      setTimeout(() => {
-        context.commit('resetProfile');
-      }, 3000);
+    async getFood(context) {
+      try {
+        const food = await axios.get(
+          "https://random-data-api.com/api/food/random_food?size=30"
+        );
+        context.commit("setFoods", food.data);
+      } catch (e) {
+        console.log(e.message);
+      }
     },
   },
 });

@@ -47,10 +47,10 @@ export default {
   name: "Header",
   computed: {
     foodCartCount() {
-      return this.$store.state.foodCart.length;
+      return this.$store.getters.foodCartCount;
     },
     foodFavoriteCount() {
-      return this.$store.state.foodFavorite.length;
+      return this.$store.getters.foodFavoriteCount;
     },
   },
 };

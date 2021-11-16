@@ -1,39 +1,35 @@
 <template>
   <div>
-    <div v-if="!foodFavorite.length">Нет избранного</div>
+    <div v-if="!foodFavorite.length">Нет избранных товаров</div>
     <div
       v-else
       class="foodfavorite-items"
     >
-      <v-row
-        v-for="foodItem of foodFavorite"
+      <div
+        v-for="foodItem in foodFavorite"
         :key="foodItem.id"
         class="foodfavorite-item"
       >
-        <v-col sm="1">
-          <img class="foodfavorite-item__img" :src="getImg(foodItem.img)" :alt="foodItem.dish">
-        </v-col>
-        <v-col sm="9">
-          <div class="foodfavorite-item__title">{{ foodItem.dish }}</div>
-          <div class="foodfavorite-item__price">{{ foodItem.price }} р.</div>
-          <v-btn
-            icon
-            @click="removefoodFavorite(foodItem)"
-          >
-            <v-icon>delete</v-icon>
-          </v-btn>
-        </v-col>
-      </v-row>
+        <img class="foodfavorite-item__img" :src="getImg(foodItem.img)" :alt="foodItem.dish">
+        <div class="foodfavorite-item__price">{{ foodItem.price }} р.</div>
+        <div class="foodfavorite-item__title">{{ foodItem.dish }}</div>
+        <v-btn
+          class="foodfavorite-item__delete"
+          icon
+          @click="removefoodFavorite(foodItem)"
+        >
+          <v-icon>delete</v-icon>
+        </v-btn>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-
 export default {
   name: "Favorite",
   data() {
-    return {}
+    return {};
   },
   computed: {
     foodFavorite() {
@@ -53,15 +49,17 @@ export default {
 
 <style scoped>
 .foodfavorite-items {
-
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 20px;
 }
 
 .foodfavorite-item {
-
+  position: relative;
 }
 
 .foodfavorite-item__img {
-  height: 100px;
+  height: 150px;
   margin-bottom: 10px;
 }
 
@@ -74,4 +72,10 @@ export default {
   margin-bottom: 10px;
 }
 
+.foodfavorite-item__delete {
+  position: absolute;
+  top: -10px;
+  right: 0;
+  background: #fff;
+}
 </style>

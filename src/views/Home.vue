@@ -9,7 +9,7 @@
     />
     <div v-if="food.length" class="food-items">
       <div
-        v-for="foodItem of food"
+        v-for="foodItem in food"
         :key="foodItem.id"
         class="food-item"
       >
@@ -17,10 +17,11 @@
         <div class="food-item__title">{{ foodItem.dish }}</div>
         <div class="food-item__price">{{ foodItem.price }} р.</div>
         <div class="food-item__description">{{ foodItem.description }}</div>
-        <div class="d-flex">
+        <div class="d-flex justify-space-between">
           <v-text-field
-            v-model="numberFood[foodItem.id]"
-            value="1"
+            v-model.number="foodItem.count"
+            class="food-item__count shrink"
+            min="1"
             type="number"
             hide-details
             single-line
@@ -28,10 +29,10 @@
             dense
           />
           <v-btn
-            color="primary"
+            :color="isCart(foodItem) ? 'success' : 'primary'"
             @click="addFoodCart(foodItem)"
           >
-            В корзину
+            {{ isCart(foodItem) ? "В корзину" : "Купить" }}
           </v-btn>
         </div>
         <v-btn
@@ -39,7 +40,9 @@
           icon
           @click="addFoodFavorite(foodItem)"
         >
-        <v-icon color="red">favorite_border</v-icon>
+          <v-icon :color="isFavorite(foodItem) ? 'red' : ''">
+            {{ isFavorite(foodItem) ? "favorite" : "favorite_border" }}
+          </v-icon>
         </v-btn>
       </div>
     </div>
@@ -47,8 +50,6 @@
 </template>
 
 <script>
-import axios from "axios";
-
 export default {
   name: "Home",
   data() {
@@ -58,16 +59,8 @@ export default {
     };
   },
   async created() {
-    try {
-      const food = await axios.get(
-        "https://random-data-api.com/api/food/random_food?size=30"
-      );
-      this.$store.commit("setFoods", food.data);
-    } catch(e) {
-      console.log(e.message);
-    } finally {
-      this.loading = false;
-    }
+    await this.$store.dispatch("getFood");
+    this.loading = false;
   },
   computed: {
     food() {
@@ -78,12 +71,26 @@ export default {
     getImg(img) {
       return require("../assets/images/" + img);
     },
+    isFavorite(foodItem) {
+      return !!this.$store.state.foodFavorite.filter(
+        (item) => item.id === foodItem.id
+      ).length;
+    },
+    isCart(foodItem) {
+      return !!this.$store.state.foodCart.filter(
+        (item) => item.id === foodItem.id
+      ).length;
+    },
     addFoodCart(item) {
-      item.count = 3;
-      this.$store.commit("addFoodCart", item);
+      if (this.isCart(item)) this.$router.push({ name: "cart" });
+      else {
+        if (!item.count || isNaN(item.count)) item.count = 1;
+        this.$store.commit("addFoodCart", item);
+      }
     },
     addFoodFavorite(item) {
-      this.$store.commit("addFoodFavorite", item);
+      if (!this.isFavorite(item)) this.$store.commit("addFoodFavorite", item);
+      else this.$store.commit("removeFoodFavorite", item.id);
     },
   },
 };
@@ -118,6 +125,10 @@ export default {
   height: 75px;
   overflow: hidden;
   margin-bottom: 10px;
+}
+
+.food-item__count {
+  width: 100px;
 }
 
 .food-item__favorite {
