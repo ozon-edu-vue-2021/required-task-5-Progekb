@@ -1,8 +1,9 @@
+import "@mdi/font/css/materialdesignicons.css";
+import "material-design-icons-iconfont/dist/material-design-icons.css";
 import Vue from "vue";
 import App from "./App.vue";
 import Vuetify from "vuetify";
 import ru from "vuetify/es5/locale/ru";
-import "@mdi/font/css/materialdesignicons.css";
 import "vuetify/dist/vuetify.min.css";
 import axios from "axios";
 import store from "./store";
